@@ -13,6 +13,8 @@ window.CLIENTS = [
   { name: "Na Brasa Prime",   logo: "assets/clients/na-brasa-prime.png", color: "#e11b1b" },
   { name: "Frangal",          logo: "assets/clients/frangal.png",        color: "#f0a500" },
   { name: "Planeta Pizza",    logo: "assets/clients/planeta-pizza.png",  color: "#0f7a2e" },
+  { name: "Êxito 1000",       logo: "assets/clients/exito-1000.png",     color: "#0b66c2" },
+  { name: "Oral Faccia",      logo: "assets/clients/oral-faccia.png",    color: "#16a39a" },
   // { name: "Novo Cliente",  logo: "assets/clients/novo-cliente.png",   color: "#888888" },
 ];
 
