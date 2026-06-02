@@ -1,4 +1,4 @@
-# Site — Lucca Monteiro (gestor de tráfego & marketing)
+# Site — Lucca Bispo (gestor de tráfego & marketing)
 
 Site de uma página (landing) com:
 
