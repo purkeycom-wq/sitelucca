@@ -10,6 +10,9 @@ inspirada no xadrez (estratégia, visão, antecipação).
 > Roda 100% fora da caixa com dados de demonstração; com as chaves de API,
 > usa dados reais do Windsor e análise generativa do Claude.
 
+> 🚀 **Para publicar e continuar evoluindo o app:** veja [`DEPLOY.md`](./DEPLOY.md) —
+> deploy em Vercel + Neon com **deploy automático a cada mudança** e rollback em 1 clique.
+
 ## Stack
 
 | Camada | Tecnologia |

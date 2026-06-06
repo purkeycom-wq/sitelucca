@@ -41,11 +41,13 @@ async function main() {
     update: {},
   });
 
-  // ── Usuário admin (login: admin@metodobispo.com / bispo123) ──
-  const passwordHash = await bcrypt.hash("bispo123", 10);
+  // ── Usuário admin (configurável por env p/ produção) ──
+  const adminEmail = (process.env.ADMIN_EMAIL || "admin@metodobispo.com").toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD || "bispo123";
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
   const user = await prisma.user.upsert({
-    where: { email: "admin@metodobispo.com" },
-    create: { email: "admin@metodobispo.com", name: "Lucca Bispo", passwordHash },
+    where: { email: adminEmail },
+    create: { email: adminEmail, name: process.env.ADMIN_NAME || "Lucca Bispo", passwordHash },
     update: { passwordHash },
   });
   await prisma.membership.upsert({
@@ -121,7 +123,7 @@ async function main() {
     console.log(`  • ${c.name}: ${n} dias reais, Score ${score.overall} (${score.status})`);
   }
 
-  console.log("✓ Seed concluído. Login: admin@metodobispo.com / bispo123");
+  console.log(`✓ Seed concluído. Login: ${adminEmail} / ${process.env.ADMIN_PASSWORD ? "(senha do ADMIN_PASSWORD)" : "bispo123"}`);
 }
 
 main()
