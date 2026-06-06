@@ -1,67 +1,96 @@
-# Site — Lucca Bispo (gestor de tráfego & marketing)
+# ♟ Método Bispo Analytics
 
-Site de uma página (landing) com:
+Plataforma de **Marketing Intelligence** premium: conecta dados via
+**Windsor.ai**, processa com a **Bispo IA** (Claude) e entrega dashboards,
+diagnósticos e recomendações acionáveis — com identidade visual exclusiva
+inspirada no xadrez (estratégia, visão, antecipação).
 
-- **Logo 3D animada** que gira no centro e, ao rolar a página, encolhe e vai
-  para o canto direito — inspirado em [air.inc](https://air.inc).
-- **Seção "Método"** em etapas numeradas — inspirado em
-  [momple.com.br](https://www.momple.com.br).
-- **Seção de Clientes** que mostra as logos das marcas atendidas.
-- Seções de serviços, prova social (marquee) e CTA de WhatsApp.
+> Esta entrega é a **vertical slice** ponta-a-ponta:
+> **Windsor.ai → Banco/normalização → Bispo IA → Dashboard**.
+> Roda 100% fora da caixa com dados de demonstração; com as chaves de API,
+> usa dados reais do Windsor e análise generativa do Claude.
 
-## Como ver o site
+## Stack
 
-É um site estático (HTML/CSS/JS). Basta abrir o `index.html` no navegador,
-ou rodar um servidor local:
+| Camada | Tecnologia |
+|--------|-----------|
+| Frontend | Next.js 15 (App Router) · TypeScript · Tailwind · Framer Motion |
+| Charts | Recharts (componentes "Bispo Charts") |
+| Dados | Windsor.ai (REST · `src/lib/windsor.ts`) |
+| IA | Claude / Anthropic SDK (`src/lib/bispo-ia.ts`) |
+| Banco | PostgreSQL + Prisma (`prisma/schema.prisma`) — multi-tenant |
+
+## Rodando localmente
 
 ```bash
-python3 -m http.server 8000
-# abra http://localhost:8000
+npm install
+npm run dev
+# http://localhost:3000  → redireciona para /dashboard
 ```
 
-> A logo 3D usa o Three.js carregado via CDN (precisa de internet no navegador).
+Sem nenhuma variável de ambiente, o app roda em **modo demonstração** com
+dados mock determinísticos (e a Bispo IA usa o motor determinístico local).
 
-## Como adicionar / trocar clientes
+### Dados e IA reais
 
-1. Coloque a imagem da logo em `assets/clients/` (PNG com fundo transparente
-   fica melhor).
-2. Abra `js/clients.js` e adicione/edite um item na lista `CLIENTS`:
+Copie `.env.example` para `.env.local` e preencha:
 
-```js
-{ name: "Nome do Cliente", logo: "assets/clients/arquivo.png", color: "#ff5a2c" },
+```env
+WINDSOR_API_KEY=...        # dados ao vivo (Windsor.ai)
+ANTHROPIC_API_KEY=...      # Bispo IA generativa (Claude)
+BISPO_IA_MODEL=claude-sonnet-4-6
+DATABASE_URL=...           # PostgreSQL (para persistência — F1+)
 ```
 
-Enquanto a imagem não existir, o card mostra um selo colorido com a inicial do
-nome (o `color`). É só soltar o arquivo certo que a logo aparece sozinha.
+O badge no topo indica a fonte (**Windsor.ai ao vivo** vs **Modo demonstração**).
 
-### Clientes já cadastrados (faltam os arquivos de imagem)
+## Como funciona o fluxo
 
-Coloque estes arquivos em `assets/clients/`:
+```
+Windsor.ai ──► windsor.ts (normaliza) ──► metrics.ts (KPIs + deltas)
+                                              │
+                          score.ts (Score Bispo 0-100, determinístico)
+                                              │
+   bispo-ia.ts: detecta sinais (math) ──► Claude interpreta ──► insights + recos
+                                              │
+                                     Dashboard (RSC) + /api/bispo-ia
+```
 
-| Cliente            | Arquivo esperado                 |
-|--------------------|----------------------------------|
-| Mama Café          | `mama-cafe.png`                  |
-| Delícias da Mama   | `delicias-da-mama.png`           |
-| Na Brasa Prime     | `na-brasa-prime.png`             |
-| Frangal            | `frangal.png`                    |
-| Planeta Pizza      | `planeta-pizza.png`              |
-| Êxito 1000         | `exito-1000.png`                 |
-| Oral Faccia        | `oral-faccia.png`                |
-
-## Como personalizar a marca
-
-- **Nome / textos:** edite direto no `index.html` (nome no `<header>` e no
-  `<footer>`, títulos das seções, etc.).
-- **Cores:** no topo de `css/style.css` há variáveis (`--accent`, `--grad`...).
-- **WhatsApp / Instagram:** os links ficam na seção `#contato` do `index.html`
-  (WhatsApp `https://wa.me/557192776774`, Instagram `@luccamonteiro.ads`).
+**Princípio:** a IA nunca recalcula números. Um pré-processador determinístico
+detecta variações e anomalias; o Claude apenas escreve a narrativa estratégica
+(O quê → Por quê → Impacto → O que fazer) em JSON estruturado.
 
 ## Estrutura
 
 ```
-index.html          # estrutura da página
-css/style.css       # estilo (tema escuro + acento quente)
-js/main.js          # logo 3D (Three.js) + animações de scroll
-js/clients.js       # lista de clientes (edite aqui p/ adicionar)
-assets/clients/     # imagens das logos dos clientes
+src/
+  app/
+    dashboard/            # shell + páginas (executivo, meta, instagram,
+    │                     #   conteúdo, bispo-ia, relatórios, conexões, config)
+    api/bispo-ia/         # endpoint JSON da camada de inteligência
+  components/
+    brand/                # marca (peça de bispo)
+    layout/               # sidebar + topbar
+    dashboard/            # KPI card, charts, score ring, insight, recos
+  lib/
+    windsor.ts            # cliente Windsor.ai (+ fallback mock)
+    bispo-ia.ts           # motor Bispo IA (sinais + Claude + fallback)
+    score.ts              # algoritmo Score Bispo
+    metrics.ts            # KPIs, cálculo de deltas, gerador mock
+    data.ts               # orquestração dos payloads
+    types.ts · utils.ts
+prisma/schema.prisma      # modelo multi-tenant (Org/Client/Connection/Metric…)
 ```
+
+## Roadmap (próximas fases)
+
+- **F1** Persistência: OAuth Windsor, worker de sync (BullMQ), gravar em Postgres
+- **F2** Multiempresa real: seletor de cliente conectado ao banco + Clerk orgs
+- **F5** Relatório PDF executivo (React-PDF) + link público white-label
+- **F6** Ações closed-loop via Windsor `execute_action` (pausar/ajustar campanha)
+- **F6** Alertas proativos (CPA/frequência) por e-mail/WhatsApp
+
+## Identidade visual
+
+- **Verde** `#52623e` — estratégia · **Azul** `#00377e` — visão · **Branco** `#f8f8f8` — clareza
+- Padrão sutil de tabuleiro (`.bg-board`) e a peça do bispo como marca.
