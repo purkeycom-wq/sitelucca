@@ -14,11 +14,12 @@ inspirada no xadrez (estratégia, visão, antecipação).
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Frontend | Next.js 15 (App Router) · TypeScript · Tailwind · Framer Motion |
+| Frontend | Next.js 15 (App Router) · React 19 · TypeScript · Tailwind · Framer Motion |
 | Charts | Recharts (componentes "Bispo Charts") |
-| Dados | Windsor.ai (REST · `src/lib/windsor.ts`) |
+| Dados | Windsor.ai (REST · `src/lib/windsor.ts`) + sync para Postgres (`src/lib/sync.ts`) |
 | IA | Claude / Anthropic SDK (`src/lib/bispo-ia.ts`) |
 | Banco | PostgreSQL + Prisma (`prisma/schema.prisma`) — multi-tenant |
+| PDF | `@react-pdf/renderer` — relatório executivo white-label (`/api/report`) |
 
 ## Rodando localmente
 
@@ -30,6 +31,38 @@ npm run dev
 
 Sem nenhuma variável de ambiente, o app roda em **modo demonstração** com
 dados mock determinísticos (e a Bispo IA usa o motor determinístico local).
+
+### Persistência (F1) — Postgres + dados reais
+
+O app lê **do banco primeiro** (`src/lib/data.ts`): Postgres → Windsor ao vivo → mock.
+Para subir o banco com os **dados reais da conta Meta "mama cafe"** (puxados via
+Windsor.ai e versionados em `prisma/fixtures/`):
+
+```bash
+# DATABASE_URL no .env apontando para um Postgres
+npm run prisma:migrate     # cria as tabelas
+npm run db:seed            # carrega 15 dias reais de Meta Ads + social/conteúdo
+npm run dev                # dashboard agora servido do banco (badge "ao vivo")
+```
+
+> O conector Meta não expõe leads/conversões/receita sem rastreamento; o funil
+> de negócio é **modelado de forma transparente** sobre o tráfego real
+> (`modelFunnel` em `src/lib/metrics.ts` — premissas documentadas e ajustáveis).
+
+Sincronização incremental (cron/manual), idempotente por `(conexão, dia, canal)`:
+
+```bash
+npm run db:sync            # puxa do Windsor (usa WINDSOR_API_KEY) e faz upsert
+```
+
+### Relatório PDF executivo
+
+```
+GET /api/report?days=30&brand=Minha%20Agência&color=%2300377e
+```
+
+Gera o PDF white-label (capa, Score Bispo, KPIs, diagnósticos, recomendações).
+O botão **"Gerar PDF"** em `/dashboard/relatorios` aponta para esse endpoint.
 
 ### Dados e IA reais
 
@@ -82,13 +115,15 @@ src/
 prisma/schema.prisma      # modelo multi-tenant (Org/Client/Connection/Metric…)
 ```
 
-## Roadmap (próximas fases)
+## Roadmap
 
-- **F1** Persistência: OAuth Windsor, worker de sync (BullMQ), gravar em Postgres
-- **F2** Multiempresa real: seletor de cliente conectado ao banco + Clerk orgs
-- **F5** Relatório PDF executivo (React-PDF) + link público white-label
-- **F6** Ações closed-loop via Windsor `execute_action` (pausar/ajustar campanha)
-- **F6** Alertas proativos (CPA/frequência) por e-mail/WhatsApp
+- [x] **F1** Persistência: Postgres + Prisma, sync idempotente Windsor → banco, seed com dados reais
+- [x] **F5** Relatório PDF executivo white-label (`/api/report`)
+- [ ] **F1+** OAuth Windsor self-service + worker agendado (BullMQ/cron)
+- [ ] **F2** Multiempresa real: seletor de cliente + Clerk orgs e permissões
+- [ ] **F5+** Link público compartilhável (shareToken) do relatório
+- [ ] **F6** Ações closed-loop via Windsor `execute_action` (pausar/ajustar campanha)
+- [ ] **F6** Alertas proativos (CPA/frequência) por e-mail/WhatsApp
 
 ## Identidade visual
 

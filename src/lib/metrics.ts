@@ -114,6 +114,26 @@ export function kpiByKey(kpis: KpiValue[], key: string): KpiValue | undefined {
   return kpis.find((k) => k.key === key);
 }
 
+/**
+ * Modela o funil de conversão (leads/conversões/receita) a partir de métricas
+ * reais de tráfego, quando o conector NÃO expõe esses eventos (caso comum em
+ * contas Meta sem rastreamento de conversão configurado no Windsor).
+ *
+ * Premissas explícitas (ajustáveis por cliente em F2): 12% dos cliques viram
+ * lead, 22% dos leads convertem, ticket médio R$ 180. É uma estimativa
+ * transparente — não substitui o pixel/CAPI, apenas mantém os KPIs de negócio
+ * úteis enquanto o rastreamento real não está conectado.
+ */
+export const FUNNEL_ASSUMPTIONS = { leadRate: 0.12, convRate: 0.22, ticket: 180 };
+
+export function modelFunnel(row: DailyMetric): DailyMetric {
+  const hasBusiness = row.leads > 0 || row.conversions > 0 || row.revenue > 0;
+  if (hasBusiness || row.clicks <= 0) return row;
+  const leads = Math.round(row.clicks * FUNNEL_ASSUMPTIONS.leadRate);
+  const conversions = Math.round(leads * FUNNEL_ASSUMPTIONS.convRate);
+  return { ...row, leads, conversions, revenue: conversions * FUNNEL_ASSUMPTIONS.ticket };
+}
+
 // ─────────────────── Gerador determinístico de mock ───────────────────
 // Usa um PRNG com seed p/ que o mock seja estável entre renders/SSR.
 

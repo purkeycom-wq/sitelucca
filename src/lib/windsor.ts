@@ -1,5 +1,5 @@
 import type { DailyMetric } from "./types";
-import { mockTimeseries } from "./metrics";
+import { mockTimeseries, modelFunnel } from "./metrics";
 
 /**
  * Cliente Windsor.ai — camada principal de dados.
@@ -14,17 +14,13 @@ import { mockTimeseries } from "./metrics";
 
 const BASE = "https://connectors.windsor.ai";
 
-// Campos canônicos solicitados ao Windsor, por conector de mídia.
-const MEDIA_FIELDS = [
-  "date",
-  "spend",
-  "impressions",
-  "reach",
-  "clicks",
-  "leads",
-  "conversions",
-  "conversion_value",
-].join(",");
+// Campos válidos por conector (validados via Windsor get_fields).
+// Meta (facebook) não expõe leads/conversões/receita sem rastreamento — o
+// funil é modelado depois (ver modelFunnel). Outros conectores entram em F1+.
+const CONNECTOR_FIELDS: Record<string, string[]> = {
+  facebook: ["date", "spend", "impressions", "reach", "clicks", "cpc", "cpm", "ctr"],
+  google_ads: ["date", "spend", "impressions", "clicks", "conversions", "conversion_value"],
+};
 
 type WindsorRow = Record<string, string | number | null>;
 
@@ -51,7 +47,10 @@ function normalize(rows: WindsorRow[]): DailyMetric[] {
     acc.revenue += num(r.conversion_value ?? r.revenue);
     byDate.set(date, acc);
   }
-  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+  // modela o funil quando o conector não expõe leads/conversões/receita.
+  return [...byDate.values()]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(modelFunnel);
 }
 
 export interface FetchOptions {
@@ -72,8 +71,8 @@ export async function fetchMediaTimeseries(
   try {
     const url = new URL(`${BASE}/${connector}`);
     url.searchParams.set("api_key", apiKey);
-    url.searchParams.set("fields", MEDIA_FIELDS);
-    url.searchParams.set("date_preset", "last_30d");
+    url.searchParams.set("fields", (CONNECTOR_FIELDS[connector] ?? CONNECTOR_FIELDS.facebook).join(","));
+    url.searchParams.set("date_preset", `last_${days}d`);
     if (process.env.WINDSOR_ACCOUNT_ID) {
       url.searchParams.set("account_id", process.env.WINDSOR_ACCOUNT_ID);
     }

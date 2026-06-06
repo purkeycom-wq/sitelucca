@@ -1,0 +1,23 @@
+{
+  "_comment": "Dados REAIS da conta Meta Ads 'mama cafe' (id 1591108058632098) puxados via Windsor.ai. Usados pelo seed para uma demonstração autêntica. Leads/conversões/receita NÃO são expostos por esta conta no Windsor — o seed modela o funil sobre estes números reais de tráfego (ver prisma/seed.ts).",
+  "connector": "facebook",
+  "account": { "id": "1591108058632098", "name": "mama cafe" },
+  "channel": "Meta Ads",
+  "rows": [
+    { "date": "2026-05-09", "spend": 1.12, "impressions": 55, "reach": 48, "clicks": 3, "cpc": 0.3733, "cpm": 20.3636, "ctr": 0.0545 },
+    { "date": "2026-05-10", "spend": 19.08, "impressions": 805, "reach": 624, "clicks": 28, "cpc": 0.6814, "cpm": 23.7019, "ctr": 0.0348 },
+    { "date": "2026-05-11", "spend": 17.23, "impressions": 659, "reach": 542, "clicks": 20, "cpc": 0.8615, "cpm": 26.1457, "ctr": 0.0303 },
+    { "date": "2026-05-12", "spend": 14.9, "impressions": 559, "reach": 469, "clicks": 23, "cpc": 0.6478, "cpm": 26.6547, "ctr": 0.0411 },
+    { "date": "2026-05-13", "spend": 15.6, "impressions": 1054, "reach": 929, "clicks": 31, "cpc": 0.5032, "cpm": 14.8008, "ctr": 0.0294 },
+    { "date": "2026-05-14", "spend": 29.43, "impressions": 3889, "reach": 3737, "clicks": 57, "cpc": 0.5163, "cpm": 7.5675, "ctr": 0.0147 },
+    { "date": "2026-05-15", "spend": 30.02, "impressions": 4736, "reach": 4731, "clicks": 80, "cpc": 0.3752, "cpm": 6.3387, "ctr": 0.0169 },
+    { "date": "2026-05-16", "spend": 32.2, "impressions": 5530, "reach": 5514, "clicks": 82, "cpc": 0.3927, "cpm": 5.8228, "ctr": 0.0148 },
+    { "date": "2026-05-17", "spend": 24.17, "impressions": 3684, "reach": 3673, "clicks": 56, "cpc": 0.4316, "cpm": 6.5608, "ctr": 0.0152 },
+    { "date": "2026-05-18", "spend": 28.07, "impressions": 3910, "reach": 3759, "clicks": 51, "cpc": 0.5504, "cpm": 7.179, "ctr": 0.013 },
+    { "date": "2026-05-19", "spend": 19.76, "impressions": 2398, "reach": 2385, "clicks": 29, "cpc": 0.6814, "cpm": 8.2402, "ctr": 0.0121 },
+    { "date": "2026-05-20", "spend": 27.7, "impressions": 4330, "reach": 4152, "clicks": 76, "cpc": 0.3645, "cpm": 6.3972, "ctr": 0.0176 },
+    { "date": "2026-05-21", "spend": 21.65, "impressions": 3882, "reach": 3814, "clicks": 56, "cpc": 0.3866, "cpm": 5.577, "ctr": 0.0144 },
+    { "date": "2026-05-22", "spend": 14.85, "impressions": 1771, "reach": 1723, "clicks": 31, "cpc": 0.479, "cpm": 8.3851, "ctr": 0.0175 },
+    { "date": "2026-05-23", "spend": 3.78, "impressions": 143, "reach": 132, "clicks": 4, "cpc": 0.945, "cpm": 26.4336, "ctr": 0.028 }
+  ]
+}

@@ -19,9 +19,14 @@ export default async function RelatoriosPage() {
           <p className="mt-1 text-sm text-muted">Relatório executivo automático, pronto para o cliente</p>
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 rounded-xl bg-bispo-blue px-4 py-2.5 text-sm font-semibold text-white shadow-card transition-transform hover:-translate-y-0.5">
+          <a
+            href="/api/report?days=30"
+            target="_blank"
+            rel="noopener"
+            className="flex items-center gap-2 rounded-xl bg-bispo-blue px-4 py-2.5 text-sm font-semibold text-white shadow-card transition-transform hover:-translate-y-0.5"
+          >
             <FileDown className="h-4 w-4" /> Gerar PDF
-          </button>
+          </a>
           <button className="flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-background">
             <Link2 className="h-4 w-4" /> Link público
           </button>

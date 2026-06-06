@@ -29,3 +29,7 @@ next-env.d.ts
 
 # prisma
 /prisma/*.db
+
+# generated reports
+relatorio-*.pdf
+*.pdf
