@@ -2,6 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, verifySession } from "@/lib/session";
 
 export async function middleware(request: NextRequest) {
+  // Sem banco configurado → modo demonstração: acesso livre ao dashboard.
+  if (!process.env.DATABASE_URL) return NextResponse.next();
+
   const token = request.cookies.get(SESSION_COOKIE)?.value;
   const session = token ? await verifySession(token) : null;
 
