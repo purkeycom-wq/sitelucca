@@ -1,0 +1,23 @@
+{
+  "_comment": "Dados REAIS da conta Meta 'Delicias da mama' (1338859038103169) via Windsor.ai.",
+  "connector": "facebook",
+  "account": { "id": "1338859038103169", "name": "Delicias da mama" },
+  "channel": "Meta Ads",
+  "rows": [
+    { "date": "2026-05-07", "spend": 8, "impressions": 2856, "reach": 2792, "clicks": 12 },
+    { "date": "2026-05-08", "spend": 11.03, "impressions": 4727, "reach": 4353, "clicks": 8 },
+    { "date": "2026-05-09", "spend": 13.47, "impressions": 7375, "reach": 6940, "clicks": 22 },
+    { "date": "2026-05-10", "spend": 12.41, "impressions": 7770, "reach": 7249, "clicks": 17 },
+    { "date": "2026-05-11", "spend": 10.65, "impressions": 5388, "reach": 5077, "clicks": 19 },
+    { "date": "2026-05-12", "spend": 10.68, "impressions": 4273, "reach": 4083, "clicks": 27 },
+    { "date": "2026-05-13", "spend": 11.95, "impressions": 3754, "reach": 3580, "clicks": 20 },
+    { "date": "2026-05-14", "spend": 22.63, "impressions": 3751, "reach": 3144, "clicks": 34 },
+    { "date": "2026-05-15", "spend": 48.37, "impressions": 6255, "reach": 4727, "clicks": 47 },
+    { "date": "2026-05-16", "spend": 39.15, "impressions": 8216, "reach": 6107, "clicks": 44 },
+    { "date": "2026-05-17", "spend": 27.83, "impressions": 8145, "reach": 6527, "clicks": 25 },
+    { "date": "2026-05-18", "spend": 18.35, "impressions": 4039, "reach": 3084, "clicks": 10 },
+    { "date": "2026-06-01", "spend": 12.25, "impressions": 4564, "reach": 4427, "clicks": 28 },
+    { "date": "2026-06-02", "spend": 25.58, "impressions": 8309, "reach": 7869, "clicks": 45 },
+    { "date": "2026-06-03", "spend": 6.77, "impressions": 2208, "reach": 2104, "clicks": 10 }
+  ]
+}
