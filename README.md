@@ -39,11 +39,21 @@ Para subir o banco com os **dados reais da conta Meta "mama cafe"** (puxados via
 Windsor.ai e versionados em `prisma/fixtures/`):
 
 ```bash
-# DATABASE_URL no .env apontando para um Postgres
+# DATABASE_URL + AUTH_SECRET no .env apontando para um Postgres
 npm run prisma:migrate     # cria as tabelas
-npm run db:seed            # carrega 15 dias reais de Meta Ads + social/conteúdo
-npm run dev                # dashboard agora servido do banco (badge "ao vivo")
+npm run db:seed            # cria 3 clientes REAIS + usuário admin
+npm run dev                # http://localhost:3000
 ```
+
+**Login (após o seed):** `admin@metodobispo.com` / `bispo123`
+
+### Autenticação & multiempresa
+
+- Login por e-mail/senha (`bcrypt`) com sessão **JWT assinada** (`jose`) em cookie httpOnly.
+- Middleware protege `/dashboard/*` (edge-safe). `AUTH_SECRET` obrigatório.
+- **3 clientes reais** no seed (Mama Café, Delícias da Mama, Planeta Pizza) — o
+  seletor de cliente e o de período (`?client=&days=`) recalculam todo o app.
+- Modelo de papéis pronto no schema (OWNER/ADMIN/ANALYST/VIEWER/CLIENT).
 
 > O conector Meta não expõe leads/conversões/receita sem rastreamento; o funil
 > de negócio é **modelado de forma transparente** sobre o tráfego real
@@ -119,11 +129,13 @@ prisma/schema.prisma      # modelo multi-tenant (Org/Client/Connection/Metric…
 
 - [x] **F1** Persistência: Postgres + Prisma, sync idempotente Windsor → banco, seed com dados reais
 - [x] **F5** Relatório PDF executivo white-label (`/api/report`)
+- [x] **F2** Autenticação (login/sessão/middleware) + multiempresa: seletor de cliente e período
 - [ ] **F1+** OAuth Windsor self-service + worker agendado (BullMQ/cron)
-- [ ] **F2** Multiempresa real: seletor de cliente + Clerk orgs e permissões
+- [ ] **F2+** Telas de gestão de equipe/papéis e convites (RBAC aplicado nas queries)
 - [ ] **F5+** Link público compartilhável (shareToken) do relatório
 - [ ] **F6** Ações closed-loop via Windsor `execute_action` (pausar/ajustar campanha)
 - [ ] **F6** Alertas proativos (CPA/frequência) por e-mail/WhatsApp
+- [ ] **Deploy** Vercel + Postgres gerenciado (Neon/Supabase) + variáveis de ambiente
 
 ## Identidade visual
 

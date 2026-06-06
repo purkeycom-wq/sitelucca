@@ -1,11 +1,10 @@
-import { getDashboard, getIntelligence } from "@/lib/data";
+import { getDashboard, getIntelligence, getSelection, type PageProps } from "@/lib/data";
 import { FileDown, Link2, Palette, FileText } from "lucide-react";
 import { formatValue } from "@/lib/utils";
 
-export const revalidate = 1800;
-
-export default async function RelatoriosPage() {
-  const dash = await getDashboard(30);
+export default async function RelatoriosPage({ searchParams }: PageProps) {
+  const { clientId, days } = await getSelection(await searchParams);
+  const dash = await getDashboard(clientId, days);
   const intel = await getIntelligence(dash);
   const roas = dash.kpis.find((k) => k.key === "roas")?.current ?? 0;
   const leads = dash.kpis.find((k) => k.key === "leads")?.current ?? 0;
@@ -20,7 +19,7 @@ export default async function RelatoriosPage() {
         </div>
         <div className="flex gap-2">
           <a
-            href="/api/report?days=30"
+            href={`/api/report?client=${clientId}&days=${days}`}
             target="_blank"
             rel="noopener"
             className="flex items-center gap-2 rounded-xl bg-bispo-blue px-4 py-2.5 text-sm font-semibold text-white shadow-card transition-transform hover:-translate-y-0.5"

@@ -11,8 +11,48 @@ import { computeBispoScore } from "./score";
 import { runBispoIa } from "./bispo-ia";
 import { hasDatabase, prisma } from "./db";
 
-// Cliente padrão do vertical slice (multiempresa real chega em F2 via Clerk).
+// Cliente padrão (primeiro da carteira) quando nenhum é selecionado.
 export const DEFAULT_CLIENT = { id: "demo", name: "Mama Café" };
+
+export interface ClientRef {
+  id: string;
+  name: string;
+}
+
+/** Carteira de clientes do usuário/organização (para o seletor). */
+export async function getClients(): Promise<ClientRef[]> {
+  if (!hasDatabase) return [DEFAULT_CLIENT];
+  try {
+    const clients = await prisma.client.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    });
+    return clients.length ? clients : [DEFAULT_CLIENT];
+  } catch {
+    return [DEFAULT_CLIENT];
+  }
+}
+
+/** Resolve um clientId válido (cai para o primeiro da carteira). */
+export async function resolveClientId(requested?: string): Promise<string> {
+  const clients = await getClients();
+  if (requested && clients.some((c) => c.id === requested)) return requested;
+  return clients[0]?.id ?? DEFAULT_CLIENT.id;
+}
+
+/** Lê cliente + período da query string das páginas. */
+export async function getSelection(sp: {
+  client?: string;
+  days?: string;
+}): Promise<{ clientId: string; days: number }> {
+  const clientId = await resolveClientId(sp.client);
+  const days = Math.min(90, Math.max(7, Number(sp.days) || 30));
+  return { clientId, days };
+}
+
+export interface PageProps {
+  searchParams: Promise<{ client?: string; days?: string }>;
+}
 
 /**
  * Lê a série persistida no Postgres (F1). Retorna null quando não há banco ou
@@ -111,9 +151,12 @@ async function readFromDb(
   }
 }
 
-export async function getDashboard(days = 30): Promise<DashboardPayload> {
+export async function getDashboard(
+  clientId: string = DEFAULT_CLIENT.id,
+  days = 30,
+): Promise<DashboardPayload> {
   // 1) Banco (F1) → 2) Windsor ao vivo → 3) mock determinístico
-  const fromDb = await readFromDb(DEFAULT_CLIENT.id, days);
+  const fromDb = await readFromDb(clientId, days);
   if (fromDb) return fromDb;
 
   const { data: timeseries, source } = await fetchMediaTimeseries({ days });

@@ -1,13 +1,12 @@
-import { getDashboard, getIntelligence } from "@/lib/data";
+import { getDashboard, getIntelligence, getSelection, type PageProps } from "@/lib/data";
 import { InsightCard } from "@/components/dashboard/insight-card";
 import { RecommendationList } from "@/components/dashboard/recommendation-list";
 import { ScoreRing } from "@/components/dashboard/score-ring";
 import { Sparkles } from "lucide-react";
 
-export const revalidate = 1800;
-
-export default async function BispoIaPage() {
-  const dash = await getDashboard(30);
+export default async function BispoIaPage({ searchParams }: PageProps) {
+  const { clientId, days } = await getSelection(await searchParams);
+  const dash = await getDashboard(clientId, days);
   const intel = await getIntelligence(dash);
 
   return (

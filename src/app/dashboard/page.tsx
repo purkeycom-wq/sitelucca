@@ -1,4 +1,4 @@
-import { getDashboard, getIntelligence } from "@/lib/data";
+import { getDashboard, getIntelligence, getSelection, type PageProps } from "@/lib/data";
 import { HEADLINE_KPIS } from "@/lib/metrics";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { TrendChart } from "@/components/dashboard/trend-chart";
@@ -8,15 +8,14 @@ import { RecommendationList } from "@/components/dashboard/recommendation-list";
 import Link from "next/link";
 import { Sparkles, ArrowRight } from "lucide-react";
 
-// Recalcula no máximo a cada 30 min (Windsor revalida no fetch).
-export const revalidate = 1800;
-
-export default async function DashboardPage() {
-  const dash = await getDashboard(30);
+export default async function DashboardPage({ searchParams }: PageProps) {
+  const { clientId, days } = await getSelection(await searchParams);
+  const dash = await getDashboard(clientId, days);
   const intel = await getIntelligence(dash);
 
   const headline = HEADLINE_KPIS.map((k) => dash.kpis.find((x) => x.key === k)!).filter(Boolean);
   const topInsight = intel.insights[0];
+  const qs = `?client=${clientId}&days=${days}`;
 
   return (
     <div className="mx-auto max-w-7xl animate-fade-up space-y-6">
@@ -34,7 +33,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link
-          href="/dashboard/bispo-ia"
+          href={`/dashboard/bispo-ia${qs}`}
           className="flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold shadow-card transition-transform hover:-translate-y-0.5"
         >
           <Sparkles className="h-4 w-4 text-bispo-blue" />

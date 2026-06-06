@@ -1,11 +1,10 @@
-import { getDashboard } from "@/lib/data";
+import { getDashboard, getSelection, type PageProps } from "@/lib/data";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 
-export const revalidate = 1800;
-
-export default async function MetaPage() {
-  const dash = await getDashboard(30);
+export default async function MetaPage({ searchParams }: PageProps) {
+  const { clientId, days } = await getSelection(await searchParams);
+  const dash = await getDashboard(clientId, days);
 
   return (
     <div className="mx-auto max-w-7xl animate-fade-up space-y-6">

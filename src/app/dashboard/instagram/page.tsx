@@ -1,17 +1,17 @@
-import { mockSocial } from "@/lib/metrics";
+import { getDashboard, getSelection, type PageProps } from "@/lib/data";
 import { SocialChart } from "@/components/dashboard/social-chart";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { formatValue, pctChange } from "@/lib/utils";
 import type { SocialPoint } from "@/lib/types";
 
-export const revalidate = 1800;
-
 function sumHalf(rows: SocialPoint[], key: keyof SocialPoint) {
   return rows.reduce((s, r) => s + (r[key] as number), 0);
 }
 
-export default function InstagramPage() {
-  const social = mockSocial(30);
+export default async function InstagramPage({ searchParams }: PageProps) {
+  const { clientId, days } = await getSelection(await searchParams);
+  const dash = await getDashboard(clientId, days);
+  const social = dash.social;
   const half = Math.floor(social.length / 2);
   const prev = social.slice(0, half);
   const curr = social.slice(half);

@@ -1,0 +1,20 @@
+{
+  "_comment": "Dados REAIS da conta Meta 'FL 01 - Planeta Pizza' (836829625680394) via Windsor.ai.",
+  "connector": "facebook",
+  "account": { "id": "836829625680394", "name": "FL 01 - Planeta Pizza" },
+  "channel": "Meta Ads",
+  "rows": [
+    { "date": "2026-05-14", "spend": 30.25, "impressions": 2329, "reach": 2201, "clicks": 54 },
+    { "date": "2026-05-15", "spend": 22.06, "impressions": 1714, "reach": 1646, "clicks": 39 },
+    { "date": "2026-05-16", "spend": 33.48, "impressions": 3622, "reach": 3428, "clicks": 150 },
+    { "date": "2026-05-17", "spend": 35.26, "impressions": 4928, "reach": 4611, "clicks": 166 },
+    { "date": "2026-05-18", "spend": 30.04, "impressions": 3420, "reach": 3244, "clicks": 142 },
+    { "date": "2026-05-28", "spend": 24.43, "impressions": 2444, "reach": 2309, "clicks": 93 },
+    { "date": "2026-05-29", "spend": 6.31, "impressions": 828, "reach": 809, "clicks": 28 },
+    { "date": "2026-05-30", "spend": 30.75, "impressions": 2921, "reach": 2754, "clicks": 94 },
+    { "date": "2026-06-02", "spend": 30.75, "impressions": 3544, "reach": 3300, "clicks": 130 },
+    { "date": "2026-06-03", "spend": 11.33, "impressions": 858, "reach": 837, "clicks": 37 },
+    { "date": "2026-06-04", "spend": 19.42, "impressions": 2159, "reach": 2088, "clicks": 99 },
+    { "date": "2026-06-05", "spend": 27.77, "impressions": 3204, "reach": 3025, "clicks": 110 }
+  ]
+}

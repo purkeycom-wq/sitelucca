@@ -1,17 +1,20 @@
 import { NextResponse } from "next/server";
-import { getDashboard, getIntelligence } from "@/lib/data";
+import { getDashboard, getIntelligence, getSelection } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/bispo-ia?days=30
+ * GET /api/bispo-ia?client=<id>&days=30
  * Retorna Score Bispo, diagnósticos e recomendações em JSON.
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const days = Math.min(90, Math.max(7, Number(searchParams.get("days")) || 30));
+  const { clientId, days } = await getSelection({
+    client: searchParams.get("client") ?? undefined,
+    days: searchParams.get("days") ?? undefined,
+  });
 
-  const dash = await getDashboard(days);
+  const dash = await getDashboard(clientId, days);
   const intel = await getIntelligence(dash);
 
   return NextResponse.json({

@@ -1,17 +1,19 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
-import { DEFAULT_CLIENT } from "@/lib/data";
+import { getClients } from "@/lib/data";
+import { getCurrentUser } from "@/lib/auth";
+import { hasDatabase } from "@/lib/db";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // Heurística leve para o badge da topbar (a fonte real é resolvida no fetch).
-  const source = process.env.WINDSOR_API_KEY ? "live" : "mock";
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [clients, user] = await Promise.all([getClients(), getCurrentUser()]);
+  const source = hasDatabase ? "live" : process.env.WINDSOR_API_KEY ? "live" : "mock";
 
   return (
     <div className="min-h-screen">
       <Sidebar />
       <div className="lg:pl-64">
-        <Topbar clientName={DEFAULT_CLIENT.name} source={source} />
-        <main className="px-5 py-6 lg:px-8">{children}</main>
+        <Topbar clients={clients} source={source} userEmail={user?.email} />
+        <main className="px-4 py-6 lg:px-8">{children}</main>
       </div>
     </div>
   );

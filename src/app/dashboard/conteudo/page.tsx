@@ -1,9 +1,7 @@
-import { mockContent } from "@/lib/metrics";
+import { getDashboard, getSelection, type PageProps } from "@/lib/data";
 import { formatValue } from "@/lib/utils";
 import { Bookmark, Share2, Eye, UserPlus, Film, Images, Image as ImageIcon, Clapperboard } from "lucide-react";
 import type { ContentPiece } from "@/lib/types";
-
-export const revalidate = 1800;
 
 const TYPE_META: Record<ContentPiece["type"], { label: string; Icon: typeof Film; color: string }> = {
   REEL: { label: "Reel", Icon: Film, color: "text-pink-600 bg-pink-100" },
@@ -21,8 +19,10 @@ function Metric({ Icon, value }: { Icon: typeof Eye; value: string }) {
   );
 }
 
-export default function ConteudoPage() {
-  const content = mockContent();
+export default async function ConteudoPage({ searchParams }: PageProps) {
+  const { clientId, days } = await getSelection(await searchParams);
+  const dash = await getDashboard(clientId, days);
+  const content = dash.content;
   const byReach = [...content].sort((a, b) => b.reach - a.reach);
   const byFollowers = [...content].sort((a, b) => b.followersGained - a.followersGained)[0];
   const byShares = [...content].sort((a, b) => b.shares - a.shares)[0];
