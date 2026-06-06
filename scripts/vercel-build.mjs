@@ -35,8 +35,10 @@ run("prisma generate");
 const hasDb = !!process.env.DATABASE_URL && process.env.DATABASE_URL.trim() !== "";
 if (hasDb) {
   run("prisma migrate deploy", { fatal: false });
+  // Seed inicial só-se-vazio (não reescreve dados já sincronizados).
+  run("node scripts/seed-if-empty.mjs", { fatal: false });
 } else {
-  console.log("\nℹ DATABASE_URL ausente — pulando migrations (deploy em modo demonstração).");
+  console.log("\nℹ DATABASE_URL ausente — pulando migrations e seed (deploy em modo demonstração).");
 }
 
 // 3) Next.js build.
